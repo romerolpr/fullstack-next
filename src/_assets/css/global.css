@@ -6,3 +6,13 @@ body {
 body {
   padding-top: 4em;
 }
+
+a.link {
+  text-decoration: none;
+}
+a.link:hover {
+  text-decoration: underline;
+}
+.final-path {
+  font-weight: 500;
+}

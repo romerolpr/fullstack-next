@@ -1,5 +1,5 @@
 import React from 'react';
-
+import Link from 'next/link';
 import { NextLink, UserListAvatar } from '../src/components';
 
 // import layout base app
@@ -8,6 +8,23 @@ import { LayoutStatic } from '../src/containers';
 const Home = () => (
   <LayoutStatic>
     
+    <div className="file-navigation mb-3 d-flex flex-items-start mt-3">
+
+      <div className="flex-1 mx-2 flex-self-center f4">
+        <div className="d-none d-sm-block">
+          <span className="text-bold">
+            <span className="d-inline-block wb-break-all">
+              <Link href={"/"}>
+                <a title="fullstack-next" className="link">fullstack-next</a>
+              </Link>
+            </span>
+          </span>
+          <span className="mx-1">/</span><strong className="final-path">Página inicial</strong><span className="mx-1">/</span>
+        </div>
+      </div>
+  
+    </div>
+
     <div className="my-3 p-3 bg-body rounded shadow-sm">
 
       <h6 className="border-bottom pb-2 mb-0">Atualizações recentes</h6>
