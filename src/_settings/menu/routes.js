@@ -14,8 +14,12 @@ export const initialLinks = [
                 label: 'Listagem de clientes'
             },
             {
-                pathname: '/clients/update',
-                label: 'Cadastro/ Edição de clientes'
+                pathname: '/clients/new',
+                label: 'Cadastrar novo cliente'
+            },
+            {
+                pathname: '/clients/edit',
+                label: 'Editar cliente existente'
             }
         ]
     },

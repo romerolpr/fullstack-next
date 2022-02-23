@@ -1,47 +1,26 @@
-import React from 'react';
-import Link from 'next/link';
-import { NextLink, UserListAvatar } from '../src/components';
-
-// import layout base app
 import { LayoutStatic } from '../src/containers';
 
-const Home = () => (
-  <LayoutStatic>
-    
-    <div className="file-navigation mb-3 d-flex flex-items-start mt-3">
+import { UserListAvatar, Rounded } from "../src/components";
+import { useFetch } from '../src/services/fetch/useFetch';
 
-      <div className="flex-1 mx-2 flex-self-center f4">
-        <div className="d-none d-sm-block">
-          <span className="text-bold">
-            <span className="d-inline-block wb-break-all">
-              <Link href={"/"}>
-                <a title="fullstack-next" className="link">fullstack-next</a>
-              </Link>
-            </span>
-          </span>
-          <span className="mx-1">/</span><strong className="final-path">Página inicial</strong><span className="mx-1">/</span>
-        </div>
-      </div>
-  
-    </div>
+const Home = () => {
 
-    <div className="my-3 p-3 bg-body rounded shadow-sm">
-
-      <h6 className="border-bottom pb-2 mb-0">Atualizações recentes</h6>
-
-      <UserListAvatar name="Joseph Marcel" description="Loren ipsum dolor sit amet, consectetur adipiscing elit. Sed lacinia non arcu rutrum congue. Maecenas posuere sit amet dolor id posuere."/>
-
-      <UserListAvatar name="Marcus Pitt" description="Nulla at aliquam odio, posuere tempus nisi. Ut semper suscipit hendrerit. Vivamus vel mauris vel eros ultrices fermentum non at dui." color="#e83e8c"/>
-
-      <UserListAvatar name="Edgar Angel" description="Praesent sit amet dapibus nulla. Vivamus imperdiet, mauris scelerisque varius varius, est odio imperdiet urna, nec porttitor nisl magna id enim." color="#6f42c1"/>
-
-      <small className="d-block text-end mt-3">
-        <NextLink href="/users" label="Ver lista completa de clientes"/>
-      </small>
-
-    </div>
-
-  </LayoutStatic>
-)
+  const { data: repo } = useFetch('/v1/users/'); //v1/users/last
+ 
+  return (
+    <LayoutStatic breadcrumbLabel="Página inicial">
+        <Rounded label="Últimas atualizações de clientes">
+            { repo?.map(user => (
+                <UserListAvatar 
+                name={user.name} 
+                description={user.description}
+                color={user.backdrop_color == '' ? null : `#${user.backdrop_color}`}
+                actions={true}
+                />
+            )) }
+        </Rounded>
+    </LayoutStatic>
+  )
+}
 
 export default Home;

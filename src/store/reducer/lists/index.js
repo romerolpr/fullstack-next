@@ -7,7 +7,7 @@ import { initialList } from "../../../_settings/reducer/initialList";
 const listReducer = (state = initialList, action) => {
   switch (action.type) {
     case HYDRATE:
-      return action.payload.posts;
+      return action.payload.lists;
     case USERS_LISTS_UPDATE:
       return action.payload;
     default:

@@ -1,3 +1,3 @@
 export const initialSetting = {
-    usersPerPage: 4,
+    usersPerPage: 10,
 }

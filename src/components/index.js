@@ -2,3 +2,8 @@ export * from './NavbarCollapse';
 export * from './NextLink';
 export * from './AvatarColor';
 export * from './UserListAvatar';
+export * from './Breadcrumb';
+export * from './Rounded';
+export * from './Pagination';
+export * from './Modal';
+export * from './Form';
