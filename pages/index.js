@@ -5,17 +5,19 @@ import { useFetch } from '../src/services/fetch/useFetch';
 
 const Home = () => {
 
-  const { data: repo } = useFetch('/v1/users/'); //v1/users/last
+  const { data: repo } = useFetch('/v1/users/');
+  const pages = repo?.slice(0, 4)
  
   return (
     <LayoutStatic breadcrumbLabel="Página inicial">
-        <Rounded label="Últimas atualizações de clientes">
-            { repo?.map(user => (
+        <Rounded label="Atualizações recentes" linkHref={'/clients'} linkLabel={"Ver todos os clientes"}>
+            { pages?.map(user => (
                 <UserListAvatar 
                 name={user.name} 
                 description={user.description}
+                lastUpdate={user.last_update}
                 color={user.backdrop_color == '' ? null : `#${user.backdrop_color}`}
-                actions={true}
+                actions={false}
                 />
             )) }
         </Rounded>

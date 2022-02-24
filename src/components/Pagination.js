@@ -3,14 +3,16 @@ import { useState, Fragment, useEffect } from "react";
 import Link from "next/link";
 import { UserListAvatar, Rounded, ModalNext } from ".";
 import { useFetch } from "../services/fetch/useFetch";
+
 import { useRouter } from "next/router";
 
-export const Pagination = ({ sliceItems, actions }) => {
+import ContentLoader from "react-content-loader";
+
+export const Pagination = ({ slice, reverse, actions }) => {
     
     const router = useRouter()
-    const [showModal, setModalShow] = useState(false);
 
-    const { data: repo } = useFetch('/v1/users');
+    const { data: repo } = useFetch('/v1/users')
 
     const initialPerPage = 10
 
@@ -23,20 +25,53 @@ export const Pagination = ({ sliceItems, actions }) => {
     const endIndex = startIndex + perPage;
 
     const currentItems = repo?.slice(startIndex, endIndex)
+    const hrefPage = router.query.page
 
-    const handleClose = () => setModalShow(false);
-    const handleShow = () => setModalShow(!showModal);
+    const handlePage = (page) => {
+        setCurrentPage(page)
+        const query = page > 0 ? { page: page } : null
+        router.push({
+            query: query
+        })
+    }
 
     useEffect(() => {
-        setCurrentPage(0)
+        
+        if (hrefPage) {
+            setCurrentPage(hrefPage)
+        } else {
+            setCurrentPage(0)
+        }
+        
     }, [perPage])
+
+    useEffect(() => {
+        // limpa states
+        return () => {
+            setItemsPerPage(initialPerPage)
+        }
+    }, [])
+
+    if (repo == null) {
+
+        return (
+            <ContentLoader 
+                speed={2}
+                viewBox="0 0 400 130"
+                backgroundColor="#f0f0f0"
+                foregroundColor="#ddd"
+            >
+                <rect x="0" y="10" rx="2" ry="2" width="150" height="12" /> 
+                <rect x="0" y="30" rx="2" ry="2" width="340" height="30" /> 
+                <rect x="380" y="30" rx="2" ry="2" width="20" height="30" /> 
+                <rect x="0" y="68" rx="2" ry="2" width="320" height="30" /> 
+                <rect x="380" y="68" rx="2" ry="2" width="20" height="30" /> 
+            </ContentLoader>
+        )
+    }
 
     return (
         <Fragment>
-            
-            { router.query.userId && (
-                <ModalNext modalShow={showModal || router.query.userId} />
-            ) }
 
             {repo?.length > 0 && (
                 <div className="d-flex flex-wrap justify-content-center m-0 p-0 ">
@@ -75,7 +110,7 @@ export const Pagination = ({ sliceItems, actions }) => {
                                     key={index}
                                     onClick={(e) => {
                                         e.preventDefault()
-                                        setCurrentPage(index)   
+                                        handlePage(index) 
                                     }}
                                     >{index + 1}</a>
                                 </li>
@@ -83,7 +118,18 @@ export const Pagination = ({ sliceItems, actions }) => {
 
                             { repo?.length > perPage ? (
                                 <li className="page-item">
-                                    <a className="page-link" href="#">Próximo</a>
+                                    <a className="page-link" href="#" onClick={(e) => {
+                                        e.preventDefault()
+                                        const newPage = currentPage + 1
+                                        let countPages = 0;
+                                        Array.from(Array(pages), () => {
+                                            countPages++;
+                                        })
+                                        if (newPage < countPages) {
+                                            handlePage(newPage)
+                                            router.push({ query: { page: newPage } })
+                                        }
+                                    } }>Próximo</a>
                                 </li>
                             ) : (
                                 <li className="page-item">Página 1 de 1</li>
@@ -100,13 +146,14 @@ export const Pagination = ({ sliceItems, actions }) => {
                         <UserListAvatar 
                         userId={user.id}
                         name={user.name} 
+                        lastUpdate={user.last_update}
                         description={user.description}
                         color={user.backdrop_color == '' ? null : `#${user.backdrop_color}`}
                         actions={actions == undefined ? false : actions}
                         />
                     </>
                 )) : (
-                    <p className="small mt-4 text-center">Nenhum cliente foi cadastrado no sistema. <Link href='/clients/new'><a className="link">Clique para cadastrar</a></Link></p>
+                    <p className="small mt-4 text-center">{!repo?.length ? 'Nenhum cliente foi cadastrado no sistema.' : 'Nenhum cliente foi encontrado nessa página.'} <Link href='/clients/new'><a className="link">Clique para cadastrar</a></Link></p>
                 ) }
             </Rounded>
         </Fragment>

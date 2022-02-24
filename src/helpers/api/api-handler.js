@@ -1,18 +1,18 @@
 import { errorHandler } from "./";
 
 function apiHandler(handler) {
-    return async (res, req) => {
-        const method = req.method
-        if (!handler[method]) {
-            // caso o método não for aceito
-            return res.status(401).end(`${method} is not allowed in this context.`)
-        }
+    
+    return async (req, res) => {
+
+        const method = req.method.toLowerCase();
+
+        if (!handler[method])
+            return res.status(401).end(`Method ${req.method} Not Allowed`);
 
         try {
-            await handler[method](res, req)
+            await handler[method](req, res);
         } catch (err) {
-            // retorna o erro já tratado
-            errorHandler(err, res)
+            errorHandler(err, res);
         }
     }
 }

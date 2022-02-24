@@ -1,56 +1,39 @@
-import getConfig from 'next/config';
-
-// resgata as variaveis de ambiente em Next.config
-const { publicRuntimeConfig } = getConfig();
+import { toast } from 'react-toastify';
+import { API } from '../../src/constants';
 
 // método GET
-async function get(url) {
-    const requestOptions = {
-        method: 'GET'
-    }
-    return fetch(url, requestOptions).then(handleResponse);
+function get(url) {
+    return API.get(url).then(handleResponse)
 }
 
 // método POST para inserir na tabela
-async function post(url, body) {
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify(body)
-    }
-    return fetch(url, requestOptions).then(handleResponse)
+function post(url, body) {
+    return handleResponse( API.post(url, body) )
 }
 
 // método para realizar update na tabela
-async function put(url, body) {
-    const requestOptions = {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-    }
-    return fetch(url, requestOptions).then(handleResponse);   
+function patch(url, body) {
+    return handleResponse( API.patch(url, body) )
 }
 
 // realiza o tratamento das respostas das requisições
 function handleResponse(response) {
 
-    return response.text().then(text => {
-
-        const data = text && JSON.parse(text)
+    return response.then(text => {
+        const data = text.data;
         
-        if (!response.ok) {
-            const error = (data && data.message) || response.statusText
-            return Promise.reject(error)
+        if (!data?.status) {
+            const error = (data && data.message);
+            toast.error('Não foi possível realizar requisição')
+            return Promise.reject(error);
         }
 
-        return data
-
-    })
+        return data;
+    });
 }
 
 export const fetchWrapper = {
     get,
     post,
-    put
+    patch
 }
